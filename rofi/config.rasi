@@ -1,0 +1,19 @@
+// Matrix dotfiles - Rofi config (rofi-wayland)
+// Before installing, verify the system rofi supports Wayland:
+//   rofi -help | grep -i wayland
+// Do not add third-party repositories just to get Wayland support.
+
+configuration {
+    modi: "drun";
+    show-icons: true;
+    icon-theme: "Papirus";
+    font: "Noto Sans 11";
+    // Vietnamese: "Tìm kiếm ứng dụng..."
+    display-drun: "Tìm kiếm ứng dụng...";
+    drun-display-format: "{name}";
+    hide-scrollbar: true;
+    fixed-num-lines: false;
+    show-match: true;
+}
+
+@theme "colors.rasi"

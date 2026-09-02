@@ -1,0 +1,64 @@
+// Matrix dotfiles - Waybar "Floating Pill" layout
+// All user-facing text in Vietnamese. Code comments in English.
+{
+    "layer": "top",
+    "position": "top",
+    "height": 34,
+    "margin-top": 8,
+    "margin-left": 12,
+    "margin-right": 12,
+    "spacing": 8,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["memory", "cpu", "pulseaudio"],
+
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "active": "",
+            "default": ""
+        },
+        "on-click": "activate",
+        "tooltip": false
+    },
+
+    "clock": {
+        "format": "{:%H:%M  %d/%m}",
+        "tooltip-format": "<big>{:%H:%M}</big>\n<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "format-today": "<span color='#88c0d0'><b><u>{}</u></b></span>"
+        },
+        "tooltip": true
+    },
+
+    "memory": {
+        "interval": 5,
+        "format": " {percentage}%",
+        "tooltip": true,
+        // "Sử dụng RAM"
+        "tooltip-format": "Sử dụng RAM: {used:0.1f}G / {total:0.1f}G"
+    },
+
+    "cpu": {
+        "interval": 5,
+        "format": " {usage}%",
+        "tooltip": true,
+        // "Sử dụng CPU"
+        "tooltip-format": "Sử dụng CPU: {usage}%"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " {volume}%",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "tooltip": true,
+        // "Âm lượng"
+        "tooltip-format": "Âm lượng: {volume}%",
+        "tooltip-format-muted": "Đã tắt tiếng: {volume}%",
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "pavucontrol"
+    }
+}

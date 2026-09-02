@@ -1,0 +1,57 @@
+# Matrix dotfiles - Dunst notification daemon
+# Minimalist: small top-right geometry, flat, no heavy effects.
+
+[global]
+    # Geometry: notification list anchored top-right, max width 320px
+    origin = top-right
+    width = 320
+    height = 110
+    offset = 12x36
+    gap_size = 6
+
+    notification_limit = 3
+    padding = 10
+    horizontal_padding = 12
+    frame_width = 2
+    frame_color = "#88c0d0"
+    separator_color = frame
+
+    # Flat look: solid background, no icon frame tricks
+    transparency = 5
+    corner_radius = 8
+    icon_position = left
+    max_icon_size = 32
+
+    font = Noto Sans 10
+
+    # User-facing strings in Vietnamese
+    show_age_threshold = 60
+    # Format times as minutes; dunst prints raw age, so keep simple
+    ignore_newline = no
+    stack_duplicates = true
+    hide_duplicate_count = false
+
+    # Notification timing (ms)
+    timeout = 5
+    timeout_low = 3
+    timeout_critical = 0
+
+    mouse_left_click = do_action, close_current
+    mouse_middle_click = close_all
+    mouse_right_click = close_current
+
+[urgency_low]
+    background = "#2e3440"
+    foreground = "#e5e9f0"
+    timeout = 3
+
+[urgency_normal]
+    background = "#2e3440"
+    foreground = "#e5e9f0"
+    timeout = 5
+
+[urgency_critical]
+    background = "#2e3440"
+    foreground = "#eceff4"
+    frame_color = "#bf616a"
+    timeout = 0

@@ -1,0 +1,61 @@
+// Matrix dotfiles - Rofi color theme (Nord-based, no blur, flat)
+
+* {
+    bg: rgba(46, 52, 64, 90%);
+    bg-alt: rgba(59, 66, 82, 90%);
+    fg: #e5e9f0;
+    fg-alt: #4c566a;
+    accent: #88c0d0;
+    urgent: #bf616a;
+
+    background-color: transparent;
+    text-color: @fg;
+}
+
+window {
+    background-color: @bg;
+    border: 2px;
+    border-color: @accent;
+    border-radius: 10px;
+    width: 500px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px;
+    children: [prompt, entry];
+}
+
+prompt {
+    text-color: @accent;
+    padding: 0 8px 0 0;
+}
+
+entry {
+    placeholder: "Tìm kiếm ứng dụng...";
+    placeholder-color: @fg-alt;
+    padding: 0 4px;
+}
+
+listview {
+    lines: 8;
+    padding: 0 10px;
+    scrollbar: false;
+    spacing: 4px;
+}
+
+element {
+    padding: 8px;
+    border-radius: 8px;
+}
+
+element selected {
+    background-color: @bg-alt;
+    text-color: @accent;
+}
+
+element urgent {
+    text-color: @urgent;
+}
