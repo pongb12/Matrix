@@ -1,27 +1,53 @@
 # Matrix — Hyprland Dotfiles
 
-A clean, lightweight, and modular Hyprland rice, built for low-end hardware and
-deployed as plain dotfiles into `~/.config/`.
+A clean, lightweight, and modular Hyprland rice with a caelestia-inspired look,
+built for low-end hardware and deployable as plain dotfiles into `~/.config/`
+on **any distribution that can run Hyprland** (Arch Linux, CachyOS, EndeavourOS,
+…). Tuned for 4 GB RAM-class machines with weak integrated graphics.
 
-> **This is a dotfiles repository — not an OS/distribution project.** No installer
-> images, no system architecture, no distro building. Just config files and a
-> small deployment script.
+> **Branches:** `dev` is the active development branch (this one, the default).
+> `test` preserves the old Linux Mint (MATE) test version and is frozen.
 
-## Purpose
+## Performance rules (baked into the configs)
 
-Matrix is an **experimental Hyprland session** for a machine that runs
-**Linux Mint with MATE as the primary desktop environment**. MATE is never
-touched, replaced, or disabled — if the Hyprland session breaks, the system
-stays fully usable through MATE.
+- **No blur** and **no shadows** — the two most expensive compositor effects.
+- Short, snappy animations (duration 2–3) to mask low framerates.
+- Minimal background daemons; every autostart entry is optional at runtime.
+- C/C++/Rust-based tools only — no JS/Qt-heavy UI stack (no AGS, no SwayNC,
+  no Quickshell; no swww/hyprpaper — `swaybg` instead).
 
-Performance rules baked into the configs:
+Expected idle RAM of the full GUI stack (Hyprland + waybar + dunst + swaybg):
 
-- **No blur** (`blur { enabled = false }`)
-- **No shadows** (`shadow { enabled = false }`)
-- Short, snappy animations (duration 2–3) to mask low framerates
-- Minimal background daemons
-- C/C++/Rust-based tools only — no JS/Electron UI stack (no AGS, no SwayNC,
-  no swww/hyprpaper — `swaybg` instead)
+| Component | Approx. RAM |
+|---|---|
+| Hyprland (compositor) | 250–450 MB |
+| waybar | 30–60 MB |
+| swaybg | ~10 MB |
+| dunst | ~5 MB |
+| **Total idle** | **≈ 500–900 MB** |
+
+Tuning knobs if you need to go lower: `foot` instead of `kitty`, remove
+`nm-applet` from `autostart.conf`, raise waybar module `interval` values.
+
+## The headline feature: Multi-display (Super+P)
+
+A Windows-style display mode picker. Press **Super+P** and choose from a rofi
+menu (UI strings in Vietnamese):
+
+| Mode | What it does |
+|---|---|
+| **1 · Chỉ màn hình máy tính** (PC screen only) | Laptop/PC screen on; projector/TV off. |
+| **2 · Nhân bản** (Duplicate) | Identical content on both screens — the presentation mode. |
+| **3 · Mở rộng** (Extend) | Second screen becomes an extended workspace; drag windows between screens — ideal for slides + notes. |
+| **4 · Chỉ màn hình thứ hai** (Second screen only) | Laptop screen off; output only on projector/TV. |
+
+The active mode is marked with `●` in the menu. The choice is applied live via
+`hyprctl` and persisted to `~/.config/hypr/configs/displays.conf`, so it
+survives reloads and re-login. Delete that file to return to full
+auto-detection. If no second screen is connected, a notification tells you so.
+
+Implementation: [hypr/scripts/multi-display.sh](hypr/scripts/multi-display.sh) — plain
+bash + `hyprctl`, no daemons, nothing runs except while the menu is open.
 
 ## What's inside
 
@@ -29,80 +55,77 @@ Performance rules baked into the configs:
 Matrix/
 ├── AGENT.md            # agent directives (persona, constraints, style rules)
 ├── TASK.md             # mission checklist
-├── DOC.md              # approved/banned tech stack reference
+├── DOC.md              # approved/banned tech stack + palette reference
 ├── Struc.md            # directory structure spec (kept up to date)
-├── install.sh          # idempotent, non-destructive deployment script
+├── install.sh          # distro-aware, idempotent, non-destructive installer
 ├── hypr/
 │   ├── hyprland.conf   # thin entry point, only `source` lines
+│   ├── scripts/
+│   │   └── multi-display.sh    # Super+P display mode switcher
 │   └── configs/
-│       ├── env.conf        # Wayland env vars (no locale forcing, no AQ_DRM_DEVICES)
-│       ├── monitors.conf   # intentionally minimal — Hyprland auto-detects displays
-│       ├── appearance.conf # gaps 4/8, 2px borders, blur+shadows off, fast animations
-│       ├── keybinds.conf   # SUPER keybinds, wpctl/brightnessctl/grim+slurp
+│       ├── env.conf        # Wayland env vars
+│       ├── monitors.conf   # intentionally minimal — Hyprland auto-detects
+│       ├── displays.conf   # display state written by Super+P switcher
+│       ├── appearance.conf # gaps 4/8, 2px borders, rounding 8, blur+shadows off
+│       ├── keybinds.conf   # SUPER keybinds incl. Super+P display picker
 │       ├── windowrules.conf# float rules for Thunar dialogs, pavucontrol, PiP
-│       └── autostart.conf  # exec-once: swaybg, dunst, waybar
+│       └── autostart.conf  # exec-once: swaybg, dunst, waybar, nm-applet
 ├── waybar/
-│   ├── config.jsonc    # "Floating Pill" layout
-│   └── style.css       # transparent bar, semi-transparent pills, cheap hover
+│   ├── config.jsonc    # "Floating Pill" layout + tray
+│   └── style.css       # deep navy pills, sky-blue accent
 ├── rofi/
 │   ├── config.rasi     # minimal drun launcher
-│   └── colors.rasi     # Nord-based flat theme
+│   └── colors.rasi     # caelestia-inspired flat theme
 └── dunst/
     └── dunstrc         # small top-right notifications, flat look
 ```
 
 ## Localization
 
-- **User-facing strings are in Vietnamese** (Waybar tooltips/labels, Rofi
-  placeholder, window rule titles): e.g. *"Tìm kiếm ứng dụng..."*,
-  *"Sử dụng RAM"*, *"Âm lượng"*.
+- **User-facing strings are in Vietnamese** (waybar tooltips/labels, rofi
+  placeholder, display-mode menu and notifications, window rule titles):
+  e.g. *"Tìm kiếm ứng dụng..."*, *"Sử dụng RAM"*, *"Âm lượng"*,
+  *"Nhân bản"*.
 - **Code comments, variable names, and logic are in English.**
-- The system locale is **not** set from Hyprland — Linux Mint manages `LANG`/
-  `LC_*` as usual.
+- The system locale is **not** set from Hyprland — your distro manages
+  `LANG`/`LC_*` as usual (set it once with `localectl`).
 
 ## Installation
 
+### Arch Linux / CachyOS / other pacman distros
+
 ```bash
-git clone <repo-url> Matrix
+git clone https://github.com/pongb12/Matrix
 cd Matrix
-./install.sh
+./install.sh --deps   # installs all packages via pacman (asks for sudo)
+./install.sh          # deploys the 14 config files into ~/.config
 ```
 
-The script:
+### Any other Hyprland-capable distro
 
-1. Creates any missing target directories under `~/.config/`
-2. Copies **only** the 12 managed files listed in `MANAGED_FILES`
-3. Never removes, renames, or touches anything else — no MATE config, no
-   unrelated user files
-4. Is fully idempotent: re-running produces the same result with no
-   accumulation
+Install the dependencies listed below with your package manager, then run
+`./install.sh` (config deployment works everywhere; only `--deps` is
+pacman-specific).
 
-To actually use the session, select **Hyprland** from your display manager at
-login (MATE remains the default).
+To start the session, select **Hyprland** in your display manager at login.
 
 ## Dependencies
 
-Required for the Hyprland session:
+| Package | Role | Notes |
+|---|---|---|
+| `hyprland` | Window manager | |
+| `waybar` | Status bar | |
+| `rofi` | Launcher + display-mode menu | Needs Wayland support: `rofi -help \| grep -i wayland`. On Arch/CachyOS the repo `rofi` (≥ 2.0) or `rofi-wayland` both work. |
+| `dunst` | Notifications | Also reports display-mode changes. |
+| `swaybg` | Wallpaper daemon | |
+| `kitty` | Terminal | `foot` works too (lighter) — edit `$terminal` in keybinds.conf. |
+| `brightnessctl` `grim` `slurp` `wl-clipboard` | Brightness, screenshots, clipboard | |
+| `jq` | Optional | Improves active-mode detection in the Super+P menu. |
+| `pipewire` `wireplumber` | Audio | `wpctl` volume control. |
 
-```text
-hyprland  waybar  rofi  dunst  swaybg  kitty
-wpctl (wireplumber)  brightnessctl  grim  slurp
-```
-
-Notes:
-
-- **Rofi must support Wayland.** Check your installed build with
-  `rofi -help | grep -i wayland` before assuming it works. Do **not** add
-  third-party PPAs just to get Wayland support.
-- `pamixer` is deliberately **not** used — volume control goes through `wpctl`.
-
-Optional (config works fine without them):
-
-```text
-thunar  pavucontrol  nm-applet
-```
-
-If an optional app is missing, its window rule / keybind simply has no effect.
+Optional: `thunar`, `pavucontrol`, `network-manager-applet`, a Nerd Font
+(JetBrainsMono recommended), `noto-fonts`. If an optional app is missing, its
+window rule / keybind simply has no effect.
 
 ## Keybinds (default)
 
@@ -110,6 +133,7 @@ If an optional app is missing, its window rule / keybind simply has no effect.
 |---|---|
 | `SUPER + Enter` | Terminal (kitty) |
 | `SUPER + D` | App launcher (rofi) |
+| `SUPER + P` | **Multi-display mode picker** |
 | `SUPER + E` | File manager (Thunar, if installed) |
 | `SUPER + Q` | Close window |
 | `SUPER + F` | Fullscreen |
@@ -128,6 +152,6 @@ Change the path there, or drop your own image at that location.
 ## Documentation map
 
 - `AGENT.md` — role and hard constraints (performance, localization, style)
-- `DOC.md` — approved and banned tech stack
+- `DOC.md` — approved and banned tech stack, caelestia-inspired palette
 - `TASK.md` — mission checklist the repo was built from
 - `Struc.md` — canonical directory structure (kept in sync automatically)

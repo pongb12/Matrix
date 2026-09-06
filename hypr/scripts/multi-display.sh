@@ -25,9 +25,9 @@ CONF_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/configs/displays.conf"
 notify() {
     # notify <summary> [body]
     if command -v dunstify >/dev/null 2>&1; then
-        dunstify -u normal "$1" "${2:-}" &
+        dunstify -u normal "$1" "${2:-}" || true
     elif command -v notify-send >/dev/null 2>&1; then
-        notify-send "$1" "${2:-}" &
+        notify-send "$1" "${2:-}" || true
     fi
 }
 
@@ -127,7 +127,7 @@ persist() {
     mkdir -p "$(dirname "$CONF_FILE")"
     cat > "$CONF_FILE" <<EOF
 # Matrix dotfiles - Display state
-# Managed automatically by scripts/multi-display.sh (Super+P). Last change:
+# Managed automatically by hypr/scripts/multi-display.sh (Super+P). Last change:
 # mode: $1  date: $(date '+%Y-%m-%d %H:%M')
 # Delete this file to return to Hyprland's full auto-detection.
 EOF

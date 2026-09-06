@@ -1,26 +1,36 @@
 # PROJECT TASKS & MISSIONS
 
-## Phase 1: Foundation & Structure
-- [ ] Read `Struc.md` and generate the initial folder hierarchy inside `~/.config/`.
-- [ ] Create a modular `hyprland.conf` that sources env variables, monitors, window rules, keybinds, and appearance.
+Branch: `dev` — polished, distro-agnostic rewrite of the original Mint/MATE test version (frozen on `test`).
 
-## Phase 2: Core Hyprland Config (Low-Spec Focus)
-- [ ] Write `configs/env.conf`: Set Wayland/Hyprland environment variables (optimized for general Wayland/Intel).
-- [ ] Write `configs/appearance.conf`: Set Gaps (in: 4, out: 8), Borders (2px), and strict optimization (DISABLE blur, disable heavy shadows). Implement snappy Bezier curve animations (time: 2-3).
-- [ ] Write `configs/keybinds.conf`: Standard SUPER/Windows keybinds for terminal (`kitty` or `foot`), app launcher, window closing, and workspace switching.
-- [ ] Write `configs/windowrules.conf`: Add smart rules (e.g., float Thunar file picker, float pavucontrol, fix picture-in-picture).
+## Phase 1: Git restructure
+- [x] Create `dev` from `main`, set `dev` as the default branch on GitHub.
+- [x] Rename `main` to `test` (frozen Mint/MATE snapshot).
 
-## Phase 3: Minimalist Waybar (Vietnamese UI)
-- [ ] Create `waybar/config.jsonc`: Implement a "Floating Pill" layout.
-    - Modules: Workspaces, Clock/Date, RAM, CPU, Volume.
-    - **L10n Task:** All tooltips and custom text must be in Vietnamese (e.g., instead of "Volume", use "Âm lượng", "RAM Usage" -> "Sử dụng RAM").
-- [ ] Create `waybar/style.css`: Use transparent backgrounds for the bar, semi-transparent for pills (modules). Add subtle `:hover` effects without heavy GPU usage.
+## Phase 2: Multi-display feature (Super+P)
+- [x] Write `hypr/scripts/multi-display.sh`: rofi menu with 4 modes — PC screen only, Duplicate (mirror), Extend, Second screen only.
+- [x] Apply modes live via `hyprctl keyword monitor`; persist choice to `configs/displays.conf` (sourced by `hyprland.conf`).
+- [x] Graceful handling: single-screen notification, desktop-PC fallback (no eDP panel), Esc aborts.
+- [x] Vietnamese notifications via dunstify/notify-send.
+- [x] Rebind `SUPER+P` (was `pseudo`) to the switcher in `keybinds.conf`.
 
-## Phase 4: App Launcher & Notifications
-- [ ] Configure `rofi/config.rasi`: Create a lightweight, minimal search menu. Set placeholder text to "Tìm kiếm ứng dụng..." (Vietnamese).
-- [ ] Configure `dunst/dunstrc`: Minimalist notification daemon. Set minimal geometry, no heavy shadows.
+## Phase 3: Caelestia-inspired theme (no added weight)
+- [x] Define the Matrix palette in `DOC.md` (deep navy surfaces + sky-blue accent).
+- [x] `appearance.conf`: rounded corners (8), accent gradient border; blur/shadows stay off.
+- [x] `waybar/style.css` + `config.jsonc`: navy pills, accent dots, tray module.
+- [x] `rofi/colors.rasi`: matching flat theme (also styles the Super+P menu).
+- [x] `dunst/dunstrc`: matching notification surfaces.
 
-## Phase 5: Verification
-- [ ] Review all generated files to ensure NO heavy components (`swww`, `ags`, `swaync`) were used.
-- [ ] Ensure all user-facing strings are correctly localized to Vietnamese.
-- [ ] Automatically update `Struc.md` to reflect the final generated project architecture.
+## Phase 4: Distro-agnostic packaging
+- [x] Rewrite `install.sh`: deploys 14 managed files + executable script; `--deps` installs packages via pacman (Arch/CachyOS); other distros get a dependency list and config-only deploy.
+- [x] Remove all Mint/MATE assumptions from configs (`env.conf`, `autostart.conf`, docs).
+
+## Phase 5: Documentation
+- [x] `README.md`: multi-distro positioning, dependencies table, keybinds incl. Super+P, RAM budget (≈500–900 MB idle), tuning knobs.
+- [x] `AGENT.md` / `DOC.md`: branch context, banned stack (Quickshell explicitly), palette reference.
+- [x] `Struc.md`: regenerated for the new tree.
+
+## Phase 6: Verification
+- [x] `bash -n` / shellcheck-style review of `install.sh` and `hypr/scripts/multi-display.sh`.
+- [x] No banned components (`swww`, `ags`, `swaync`, Quickshell) anywhere.
+- [x] All user-facing strings localized to Vietnamese.
+- [x] `Struc.md` matches the final tree.
