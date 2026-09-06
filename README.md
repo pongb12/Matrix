@@ -14,16 +14,6 @@ Matrix is an **experimental Hyprland session** for a machine that runs
 touched, replaced, or disabled — if the Hyprland session breaks, the system
 stays fully usable through MATE.
 
-## Target hardware
-
-The rice is tuned for weak machines and verified against:
-
-| Component | Spec |
-|---|---|
-| CPU | Intel Pentium Silver N5030 |
-| GPU | Intel UHD Graphics 605 |
-| RAM | 4 GB |
-
 Performance rules baked into the configs:
 
 - **No blur** (`blur { enabled = false }`)
