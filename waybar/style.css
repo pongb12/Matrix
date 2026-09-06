@@ -1,6 +1,6 @@
 /* Matrix dotfiles - Waybar style
- * Transparent bar, semi-transparent pills, subtle hover.
- * No box-shadow or backdrop-filter (GPU-friendly).
+ * Caelestia-inspired: deep navy pills with a soft sky-blue accent on a fully
+ * transparent bar. Subtle hover only — no box-shadow / backdrop-filter (GPU-friendly).
  */
 
 * {
@@ -14,16 +14,17 @@
 /* The bar itself is fully transparent */
 window#waybar {
     background-color: transparent;
-    color: #e5e9f0;
+    color: #e6eaf2;
 }
 
-/* Semi-transparent pills for each module */
+/* Semi-transparent navy pills for each module */
 .modules-left > widget > #workspaces,
 #clock,
 #memory,
 #cpu,
+#tray,
 #pulseaudio {
-    background-color: rgba(46, 52, 64, 0.75);
+    background-color: rgba(14, 17, 24, 0.78);
     border-radius: 17px;
     padding: 2px 14px;
     margin-top: 2px;
@@ -35,41 +36,42 @@ window#waybar {
 #clock:hover,
 #memory:hover,
 #cpu:hover,
+#tray:hover,
 #pulseaudio:hover,
 .modules-left > widget > #workspaces:hover {
-    background-color: rgba(59, 66, 82, 0.85);
+    background-color: rgba(29, 36, 48, 0.9);
 }
 
-/* Workspaces */
+/* Workspaces: dim dots, active dot in the caelestia sky-blue accent */
 #workspaces button {
     padding: 0 6px;
     background-color: transparent;
-    color: #4c566a;
+    color: #7d8899;
     border-radius: 17px;
     transition: color 0.2s;
 }
 
 #workspaces button.active {
-    color: #88c0d0;
+    color: #7ab3f5;
 }
 
 #workspaces button:hover {
-    color: #e5e9f0;
+    color: #e6eaf2;
     background-color: transparent;
 }
 
 /* Muted volume state */
 #pulseaudio.muted {
-    color: #bf616a;
+    color: #ee7b93;
 }
 
 /* Critical states */
 #memory.critical,
 #cpu.critical {
-    color: #bf616a;
+    color: #ee7b93;
 }
 
 #memory.warning,
 #cpu.warning {
-    color: #ebcb8b;
+    color: #ecd28b;
 }

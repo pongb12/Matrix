@@ -11,13 +11,13 @@
 
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["memory", "cpu", "pulseaudio"],
+    "modules-right": ["tray", "memory", "cpu", "pulseaudio"],
 
     "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
-            "active": "",
-            "default": ""
+            "active": "",
+            "default": ""
         },
         "on-click": "activate",
         "tooltip": false
@@ -27,9 +27,15 @@
         "format": "{:%H:%M  %d/%m}",
         "tooltip-format": "<big>{:%H:%M}</big>\n<tt><small>{calendar}</small></tt>",
         "calendar": {
-            "format-today": "<span color='#88c0d0'><b><u>{}</u></b></span>"
+            "format-today": "<span color='#7ab3f5'><b><u>{}</u></b></span>"
         },
         "tooltip": true
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 6,
+        "tooltip": false
     },
 
     "memory": {

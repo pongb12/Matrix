@@ -1,12 +1,13 @@
-// Matrix dotfiles - Rofi color theme (Nord-based, no blur, flat)
+// Matrix dotfiles - Rofi color theme (caelestia-inspired, flat, no blur)
+// Deep navy surfaces + soft sky-blue accent, matching waybar and dunst.
 
 * {
-    bg: rgba(46, 52, 64, 90%);
-    bg-alt: rgba(59, 66, 82, 90%);
-    fg: #e5e9f0;
-    fg-alt: #4c566a;
-    accent: #88c0d0;
-    urgent: #bf616a;
+    bg: rgba(14, 17, 24, 92%);
+    bg-alt: rgba(29, 36, 48, 92%);
+    fg: #e6eaf2;
+    fg-alt: #7d8899;
+    accent: #7ab3f5;
+    urgent: #ee7b93;
 
     background-color: transparent;
     text-color: @fg;

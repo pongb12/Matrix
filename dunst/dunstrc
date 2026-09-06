@@ -13,7 +13,7 @@
     padding = 10
     horizontal_padding = 12
     frame_width = 2
-    frame_color = "#88c0d0"
+    frame_color = "#7ab3f5"
     separator_color = frame
 
     # Flat look: solid background, no icon frame tricks
@@ -41,17 +41,17 @@
     mouse_right_click = close_current
 
 [urgency_low]
-    background = "#2e3440"
-    foreground = "#e5e9f0"
+    background = "#14181f"
+    foreground = "#e6eaf2"
     timeout = 3
 
 [urgency_normal]
-    background = "#2e3440"
-    foreground = "#e5e9f0"
+    background = "#14181f"
+    foreground = "#e6eaf2"
     timeout = 5
 
 [urgency_critical]
-    background = "#2e3440"
-    foreground = "#eceff4"
-    frame_color = "#bf616a"
+    background = "#14181f"
+    foreground = "#eef2f8"
+    frame_color = "#ee7b93"
     timeout = 0
