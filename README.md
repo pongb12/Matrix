@@ -1,157 +1,235 @@
-# Matrix — Hyprland Dotfiles
+<div align="center">
 
-A clean, lightweight, and modular Hyprland rice with a caelestia-inspired look,
-built for low-end hardware and deployable as plain dotfiles into `~/.config/`
-on **any distribution that can run Hyprland** (Arch Linux, CachyOS, EndeavourOS,
-…). Tuned for 4 GB RAM-class machines with weak integrated graphics.
+# Matrix
 
-> **Branches:** `dev` is the active development branch (this one, the default).
-> `test` preserves the old Linux Mint (MATE) test version and is frozen.
+**A lightweight, caelestia-inspired Hyprland desktop — built for low-end hardware.**
 
-## Performance rules (baked into the configs)
+*Plain dotfiles, no shell framework, no hidden daemons. Every running component is a small, auditable process.*
 
-- **No blur** and **no shadows** — the two most expensive compositor effects.
-- Short, snappy animations (duration 2–3) to mask low framerates.
-- Minimal background daemons; every autostart entry is optional at runtime.
-- C/C++/Rust-based tools only — no JS/Qt-heavy UI stack (no AGS, no SwayNC,
-  no Quickshell; no swww/hyprpaper — `swaybg` instead).
+[![Hyprland](https://img.shields.io/badge/Hyprland-0.56%2B-7ab3f5)](https://hypr.land)
+[![Branch](https://img.shields.io/badge/branch-dev-blue)](../../tree/dev)
+[![Installer](https://img.shields.io/badge/install-bash%20%2B%20pacman-green)](install.sh)
+[![Idle RAM](https://img.shields.io/badge/idle%20RAM-%E2%89%88500%E2%80%93900%20MB-important)](#performance)
 
-Expected idle RAM of the full GUI stack (Hyprland + waybar + dunst + swaybg):
+**English** · [Tiếng Việt](README.vi.md)
+
+</div>
+
+---
+
+## Overview
+
+Matrix is a complete Hyprland session assembled from a deliberately small set of
+C/C++/Rust components. It follows three engineering rules:
+
+1. **Nothing heavy.** No blur, no shadows, no Qt/QML shell, no Electron. The
+   compositor and the bar are the only long-running graphical processes.
+2. **Nothing hidden.** The desktop is 14 plain config files and one bash script,
+   deployed into `~/.config/`. What you read is what runs.
+3. **Nothing that can brick your session.** The installer never deletes or
+   overwrites anything except its own 14 managed files, and every autostart
+   entry degrades gracefully if its binary is missing.
+
+## Features
+
+- **Hyprland** session with a modular config (`hyprland.conf` only sources
+  `configs/*.conf`), rounded corners, 2 px accent borders, and short
+  animations tuned for weak iGPUs.
+- **Multi-display switching (`Super+P`)** — a Windows-style mode picker with
+  four modes: *PC screen only*, *Duplicate*, *Extend*, *Second screen only*.
+  Implemented in plain bash + `hyprctl`; the selected mode is persisted and
+  restored on the next login.
+- **Waybar** floating-pill status bar with tray, workspaces, clock, RAM/CPU and
+  volume modules.
+- **rofi** launcher and display-mode menu (rofi ≥ 2.0 includes native Wayland
+  support).
+- **dunst** notifications — also used for display-mode feedback.
+- **swaybg** wallpaper, `wpctl` volume, `brightnessctl` backlight,
+  `grim`+`slurp` screenshots.
+- All user-facing strings are localized in **Vietnamese**.
+
+## Requirements
+
+| Package | Role |
+|---|---|
+| `hyprland` | Wayland compositor (≥ 0.56 recommended; config verified against 0.56.2) |
+| `waybar` | Status bar |
+| `rofi` | Launcher + display-mode menu (Wayland build required: rofi ≥ 2.0 or `rofi-wayland`) |
+| `dunst` | Notification daemon |
+| `swaybg` | Wallpaper daemon |
+| `kitty` | Terminal (`foot` works as a lighter alternative — edit `$terminal` in `keybinds.conf`) |
+| `brightnessctl`, `grim`, `slurp`, `wl-clipboard` | Backlight, screenshots, clipboard |
+| `jq` | Optional — improves active-mode detection in the Super+P menu |
+| `pipewire`, `wireplumber` | Audio (`wpctl`) |
+
+Optional: `thunar`, `pavucontrol`, `network-manager-applet`, a Nerd Font
+(JetBrainsMono recommended), `noto-fonts`. Missing optional packages only mean
+the related keybind or window rule has no effect.
+
+A Wayland-capable GPU and a display manager (SDDM, greetd, …) are assumed.
+
+## Installation
+
+### CachyOS
+
+CachyOS supports Hyprland natively. Two paths, both ending with the same
+Matrix deployment.
+
+#### Path A — fresh CachyOS install (recommended)
+
+1. Boot the CachyOS ISO and start the installer.
+2. In the desktop-environment step either:
+   - choose **Hyprland** (CachyOS ships its own shell on top of it — Matrix
+     will replace the compositor config in step 4; the extra CachyOS shell
+     packages such as `cachyos-hypr-noctalia` can be removed afterwards with
+     `pacman -R cachyos-hypr-noctalia` if you want a pure Matrix setup), **or**
+   - choose **No Desktop** for the cleanest, Matrix-only session.
+3. Finish the install, reboot, and log in to a TTY (`Ctrl+Alt+F2`) if you
+   chose "No Desktop".
+4. Install the session stack:
+
+   ```bash
+   sudo pacman -S --needed hyprland waybar rofi dunst swaybg kitty \
+     brightnessctl grim slurp wl-clipboard jq \
+     pipewire wireplumber pipewire-pulse thunar pavucontrol \
+     network-manager-applet ttf-jetbrainsmono-nerd noto-fonts
+   ```
+
+5. If you chose "No Desktop", enable a display manager (skip if CachyOS
+   already installed one):
+
+   ```bash
+   sudo pacman -S --needed sddm
+   sudo systemctl enable sddm
+   ```
+
+6. Deploy Matrix:
+
+   ```bash
+   git clone https://github.com/pongb12/Matrix.git
+   cd Matrix
+   ./install.sh
+   ```
+
+7. Put a wallpaper at `~/Pictures/wallpaper.jpg` (or change the path in
+   `hypr/configs/autostart.conf`), then reboot — **Hyprland** appears as a
+   session in SDDM.
+
+#### Path B — existing CachyOS with another desktop
+
+```bash
+sudo pacman -S --needed hyprland waybar rofi dunst swaybg kitty \
+  brightnessctl grim slurp wl-clipboard jq pipewire wireplumber
+git clone https://github.com/pongb12/Matrix.git
+cd Matrix
+./install.sh
+```
+
+Log out and pick **Hyprland** in your display manager. Your existing desktop
+is untouched — Matrix only writes its own 14 files.
+
+#### One-command variant
+
+On any pacman-based system (CachyOS, Arch, EndeavourOS), `--deps` performs
+step 4 automatically before deploying:
+
+```bash
+git clone https://github.com/pongb12/Matrix.git && cd Matrix
+./install.sh --deps   # installs the packages via pacman (asks for sudo)
+./install.sh          # deploys the configs
+```
+
+### Other Arch-based distributions
+
+Same as Path B. The only Arch-specific assumption is the `pacman` package
+names; every config file is distro-agnostic.
+
+### Other distributions (non-pacman)
+
+Install the packages from [Requirements](#requirements) with your package
+manager, then run `./install.sh` (config deployment works everywhere; only
+`--deps` is pacman-specific).
+
+### Uninstall
+
+Remove the deployed files — nothing else was ever written:
+
+```bash
+rm -rf ~/.config/hypr ~/.config/waybar ~/.config/rofi ~/.config/dunst
+rm -rf ~/.local/state/matrix   # display-mode state, if present
+```
+
+## Usage
+
+### Keybinds
+
+| Keys | Action |
+|---|---|
+| `SUPER + Enter` | Terminal |
+| `SUPER + D` | App launcher |
+| `SUPER + P` | **Display-mode picker** |
+| `SUPER + E` | File manager (if installed) |
+| `SUPER + Q` | Close window |
+| `SUPER + F` | Fullscreen |
+| `SUPER + Space` | Toggle floating |
+| `SUPER + J` | Toggle split |
+| `SUPER + 1..9` | Workspace (`SHIFT` moves the focused window) |
+| `SUPER + arrows` | Move focus |
+| `SUPER + mouse buttons` | Move / resize windows |
+| `Print` / `Shift + Print` | Screenshot (full / selection) |
+| Volume / brightness keys | `wpctl` / `brightnessctl` |
+| `SUPER + M` | Exit Hyprland |
+
+### Multi-display (Super+P)
+
+| Mode | Effect |
+|---|---|
+| **1 · Chỉ màn hình máy tính** | PC screen only — external display off |
+| **2 · Nhân bản** | Duplicate — identical picture on both screens (presentations) |
+| **3 · Mở rộng** | Extend — the second display becomes additional workspace |
+| **4 · Chỉ màn hình thứ hai** | Second screen only — laptop panel off |
+
+The active mode is marked with `●`. The choice is applied live and persisted
+to `~/.config/hypr/configs/displays.conf`; delete that file to return to
+auto-detection. With no second display connected, a notification says so.
+
+## Performance
+
+Idle RAM of the full GUI stack (compositor + bar + notifications + wallpaper):
 
 | Component | Approx. RAM |
 |---|---|
-| Hyprland (compositor) | 250–450 MB |
+| Hyprland | 250–450 MB |
 | waybar | 30–60 MB |
 | swaybg | ~10 MB |
 | dunst | ~5 MB |
 | **Total idle** | **≈ 500–900 MB** |
 
-Tuning knobs if you need to go lower: `foot` instead of `kitty`, remove
-`nm-applet` from `autostart.conf`, raise waybar module `interval` values.
+Baked-in rules: `blur` and `shadows` disabled, animation durations 2–3,
+minimal autostart. To go lower: use `foot` instead of `kitty`, remove
+`nm-applet` from `autostart.conf`, raise the waybar `interval` values.
 
-## The headline feature: Multi-display (Super+P)
+## Troubleshooting
 
-A Windows-style display mode picker. Press **Super+P** and choose from a rofi
-menu (UI strings in Vietnamese):
+- **Launcher or Super+P menu does not open** — your rofi has no Wayland
+  support. Check with `rofi -help | grep -i wayland`; on Arch/CachyOS install
+  `rofi` (≥ 2.0) or `rofi-wayland`.
+- **Where are the logs?** Hyprland writes to
+  `/run/user/$UID/hypr/*/hyprland.log`. A crashed session leaves a report in
+  `~/.cache/hyprland/`.
+- **A config line is invalid after a Hyprland update** — Hyprland keeps
+  running and draws an error overlay instead of failing to start. Check the
+  log line beginning with `ERR` and adjust; the session is otherwise usable.
+- **Display-mode changes did not persist** — verify
+  `~/.config/hypr/configs/displays.conf` exists; it is rewritten on every
+  Super+P selection.
+- **Wrong monitor name in the picker** — names are detected at runtime from
+  `hyprctl monitors` (`eDP-*` = internal panel, everything non-`HEADLESS` is
+  treated as external), so there is nothing to configure.
 
-| Mode | What it does |
+## Branches
+
+| Branch | Purpose |
 |---|---|
-| **1 · Chỉ màn hình máy tính** (PC screen only) | Laptop/PC screen on; projector/TV off. |
-| **2 · Nhân bản** (Duplicate) | Identical content on both screens — the presentation mode. |
-| **3 · Mở rộng** (Extend) | Second screen becomes an extended workspace; drag windows between screens — ideal for slides + notes. |
-| **4 · Chỉ màn hình thứ hai** (Second screen only) | Laptop screen off; output only on projector/TV. |
-
-The active mode is marked with `●` in the menu. The choice is applied live via
-`hyprctl` and persisted to `~/.config/hypr/configs/displays.conf`, so it
-survives reloads and re-login. Delete that file to return to full
-auto-detection. If no second screen is connected, a notification tells you so.
-
-Implementation: [hypr/scripts/multi-display.sh](hypr/scripts/multi-display.sh) — plain
-bash + `hyprctl`, no daemons, nothing runs except while the menu is open.
-
-## What's inside
-
-```text
-Matrix/
-├── AGENT.md            # agent directives (persona, constraints, style rules)
-├── TASK.md             # mission checklist
-├── DOC.md              # approved/banned tech stack + palette reference
-├── Struc.md            # directory structure spec (kept up to date)
-├── install.sh          # distro-aware, idempotent, non-destructive installer
-├── hypr/
-│   ├── hyprland.conf   # thin entry point, only `source` lines
-│   ├── scripts/
-│   │   └── multi-display.sh    # Super+P display mode switcher
-│   └── configs/
-│       ├── env.conf        # Wayland env vars
-│       ├── monitors.conf   # intentionally minimal — Hyprland auto-detects
-│       ├── displays.conf   # display state written by Super+P switcher
-│       ├── appearance.conf # gaps 4/8, 2px borders, rounding 8, blur+shadows off
-│       ├── keybinds.conf   # SUPER keybinds incl. Super+P display picker
-│       ├── windowrules.conf# float rules for Thunar dialogs, pavucontrol, PiP
-│       └── autostart.conf  # exec-once: swaybg, dunst, waybar, nm-applet
-├── waybar/
-│   ├── config.jsonc    # "Floating Pill" layout + tray
-│   └── style.css       # deep navy pills, sky-blue accent
-├── rofi/
-│   ├── config.rasi     # minimal drun launcher
-│   └── colors.rasi     # caelestia-inspired flat theme
-└── dunst/
-    └── dunstrc         # small top-right notifications, flat look
-```
-
-## Localization
-
-- **User-facing strings are in Vietnamese** (waybar tooltips/labels, rofi
-  placeholder, display-mode menu and notifications, window rule titles):
-  e.g. *"Tìm kiếm ứng dụng..."*, *"Sử dụng RAM"*, *"Âm lượng"*,
-  *"Nhân bản"*.
-- **Code comments, variable names, and logic are in English.**
-- The system locale is **not** set from Hyprland — your distro manages
-  `LANG`/`LC_*` as usual (set it once with `localectl`).
-
-## Installation
-
-### Arch Linux / CachyOS / other pacman distros
-
-```bash
-git clone https://github.com/pongb12/Matrix
-cd Matrix
-./install.sh --deps   # installs all packages via pacman (asks for sudo)
-./install.sh          # deploys the 14 config files into ~/.config
-```
-
-### Any other Hyprland-capable distro
-
-Install the dependencies listed below with your package manager, then run
-`./install.sh` (config deployment works everywhere; only `--deps` is
-pacman-specific).
-
-To start the session, select **Hyprland** in your display manager at login.
-
-## Dependencies
-
-| Package | Role | Notes |
-|---|---|---|
-| `hyprland` | Window manager | |
-| `waybar` | Status bar | |
-| `rofi` | Launcher + display-mode menu | Needs Wayland support: `rofi -help \| grep -i wayland`. On Arch/CachyOS the repo `rofi` (≥ 2.0) or `rofi-wayland` both work. |
-| `dunst` | Notifications | Also reports display-mode changes. |
-| `swaybg` | Wallpaper daemon | |
-| `kitty` | Terminal | `foot` works too (lighter) — edit `$terminal` in keybinds.conf. |
-| `brightnessctl` `grim` `slurp` `wl-clipboard` | Brightness, screenshots, clipboard | |
-| `jq` | Optional | Improves active-mode detection in the Super+P menu. |
-| `pipewire` `wireplumber` | Audio | `wpctl` volume control. |
-
-Optional: `thunar`, `pavucontrol`, `network-manager-applet`, a Nerd Font
-(JetBrainsMono recommended), `noto-fonts`. If an optional app is missing, its
-window rule / keybind simply has no effect.
-
-## Keybinds (default)
-
-| Keys | Action |
-|---|---|
-| `SUPER + Enter` | Terminal (kitty) |
-| `SUPER + D` | App launcher (rofi) |
-| `SUPER + P` | **Multi-display mode picker** |
-| `SUPER + E` | File manager (Thunar, if installed) |
-| `SUPER + Q` | Close window |
-| `SUPER + F` | Fullscreen |
-| `SUPER + Space` | Toggle floating |
-| `SUPER + 1..9` | Switch workspace (`SHIFT` moves the window) |
-| `SUPER + arrows` | Focus direction |
-| `SUPER + M` | Exit Hyprland |
-| `Print` / `Shift + Print` | Screenshot (full screen / selection via grim+slurp) |
-| Volume / brightness keys | wpctl / brightnessctl |
-
-## Wallpapers
-
-`autostart.conf` launches `swaybg` with `~/Pictures/wallpaper.jpg` (fill mode).
-Change the path there, or drop your own image at that location.
-
-## Documentation map
-
-- `AGENT.md` — role and hard constraints (performance, localization, style)
-- `DOC.md` — approved and banned tech stack, caelestia-inspired palette
-- `TASK.md` — mission checklist the repo was built from
-- `Struc.md` — canonical directory structure (kept in sync automatically)
+| [`dev`](../../tree/dev) | Active development; the release configuration (this branch) |
+| [`test`](../../tree/test) | Historical snapshot of the original Mint/MATE test version — frozen, do not use |

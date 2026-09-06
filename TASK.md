@@ -34,3 +34,7 @@ Branch: `dev` — polished, distro-agnostic rewrite of the original Mint/MATE te
 - [x] No banned components (`swww`, `ags`, `swaync`, Quickshell) anywhere.
 - [x] All user-facing strings localized to Vietnamese.
 - [x] `Struc.md` matches the final tree.
+
+## Phase 7: Live validation & release README
+- [x] Install Hyprland 0.56.2 (cppiber PPA) on Mint 22.3 and deploy configs; launch test caught and fixed the removed `togglesplit` dispatcher (now `layoutmsg, togglesplit`); config parses with zero ERR lines.
+- [x] Release-style README (English) + full Vietnamese version (`README.vi.md`), detailed CachyOS setup paths, no target-device or documentation-map sections.

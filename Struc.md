@@ -5,6 +5,8 @@
 ## Current Tree (dev branch)
 ```text
 Matrix/                      # dotfiles repository (deployed to ~/.config/ by install.sh)
+├── README.md                # release README (English)
+├── README.vi.md             # release README (Vietnamese)
 ├── AGENT.md
 ├── TASK.md
 ├── DOC.md
